@@ -1,0 +1,19 @@
+.form-floating input {
+    width: 100%;
+    padding: 25px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background: white;
+    height: 70px;
+}
+
+.login-box {
+    background: rgb(17, 57, 189);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px; /* Aumentei para caber melhor o email */
+    margin: 0 auto;
+}

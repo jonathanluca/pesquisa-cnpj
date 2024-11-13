@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-box">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="Seu e-mail" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Sua senha" 
+                        required
+                    >
+                </div>
+
+                <button type="submit">Entrar</button>
+                <div id="error-message" class="error-message"></div>
+            </form>
+            
+            <div class="auth-links">
+                <p>Não tem uma conta? <a href="/cadastro.html">Cadastre-se</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { firebaseConfig } from './js/firebase-config.js';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Verificar se já está logado
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.href = '/consulta.html';
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            try {
+                errorMessage.textContent = '';
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                // Login bem-sucedido, redirecionar para a página de consulta
+                window.location.href = '/consulta.html';
+            } catch (error) {
+                console.error('Erro no login:', error);
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage.textContent = 'E-mail inválido';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage.textContent = 'Usuário desativado';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage.textContent = 'Usuário não encontrado';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage.textContent = 'Senha incorreta';
+                        break;
+                    default:
+                        errorMessage.textContent = 'Erro ao fazer login. Tente novamente.';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

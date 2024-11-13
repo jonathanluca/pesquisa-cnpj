@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CNPJ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Consulta CNPJ</h1>
+            <button onclick="logout()" class="logout-btn">Sair</button>
+        </div>
+        
+        <div class="search-box">
+            <form id="consultaForm">
+                <input 
+                    type="text" 
+                    id="cnpj" 
+                    placeholder="Digite o CNPJ" 
+                    required
+                >
+                <button type="submit">Consultar</button>
+            </form>
+        </div>
+
+        <div id="resultado" class="result-box"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { firebaseConfig } from './js/firebase-config.js';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Verificar se está logado
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = '/';
+            }
+        });
+
+        // Função de logout
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Erro ao fazer logout:', error);
+            }
+        };
+
+        // Consulta CNPJ
+        document.getElementById('consultaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cnpj = document.getElementById('cnpj').value.replace(/\D/g, '');
+            const resultado = document.getElementById('resultado');
+            
+            try {
+                resultado.style.display = 'block';
+                resultado.innerHTML = '<div class="loading">Consultando...</div>';
+
+                const response = await fetch(`/api/cnpj/${cnpj}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                resultado.innerHTML = `
+                    <div class="result-section">
+                        <div class="result-header">Informações do CNPJ</div>
+                        <div class="result-content">
+                            <div class="info-row">
+                                <span class="info-label">CNPJ:</span>
+                                <span class="info-value">${data.cnpj}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Razão Social:</span>
+                                <span class="info-value">${data.razao_social}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Nome Fantasia:</span>
+                                <span class="info-value">${data.nome_fantasia || 'Não informado'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Situação:</span>
+                                <span class="info-value">${data.situacao}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-section">
+                        <div class="result-header">Atividade Principal</div>
+                        <div class="result-content">
+                            <div class="atividade-item">
+                                <div class="atividade-codigo">${data.atividade_principal.code}</div>
+                                <div class="atividade-descricao">${data.atividade_principal.text}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${data.atividades_secundarias && data.atividades_secundarias.length > 0 ? `
+                        <div class="result-section">
+                            <div class="result-header">Atividades Secundárias</div>
+                            <div class="result-content">
+                                ${data.atividades_secundarias.map(ativ => `
+                                    <div class="atividade-item">
+                                        <div class="atividade-codigo">${ativ.code}</div>
+                                        <div class="atividade-descricao">${ativ.text}</div>
+                                        <div class="atividade-enquadramento">
+                                            <span class="enquadramento-label">Enquadramento:</span>
+                                            <span class="enquadramento-value">${ativ.enquadramento}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+
+            } catch (error) {
+                resultado.innerHTML = `
+                    <div class="error-message">
+                        Erro ao consultar CNPJ. Verifique o número e tente novamente.
+                    </div>
+                `;
+                resultado.className = 'result-box error';
+            }
+        });
+    </script>
+</body>
+</html>

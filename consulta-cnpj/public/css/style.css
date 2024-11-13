@@ -1,0 +1,128 @@
+/* Variáveis */
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --text-color: #333;
+    --border-color: #ddd;
+    --error-color: #dc3545;
+    --background-color: #f5f5f5;
+}
+
+/* Container principal */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+/* Campos flutuantes */
+.form-floating {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-floating input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-floating label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    padding: 0 5px;
+    color: #666;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-floating input:focus,
+.form-floating input:not(:placeholder-shown) {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-floating input:focus + label,
+.form-floating input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 14px;
+    color: var(--primary-color);
+}
+
+/* Botão de login */
+.login-button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.login-button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Link de registro */
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.register-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Mensagem de erro */
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 20px;
+    }
+}

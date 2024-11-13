@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando...</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIepJlp7nnyjDHeqxqlF08rDiUJIyZydI",
+            authDomain: "consulta-cnpj-3b710.firebaseapp.com",
+            projectId: "consulta-cnpj-3b710",
+            storageBucket: "consulta-cnpj-3b710.firebasestorage.app",
+            messagingSenderId: "1033319122764",
+            appId: "1:1033319122764:web:858a61c2b184cd746e31e9",
+            measurementId: "G-KNQBD2SEW6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Verifica o estado da autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuário está logado
+                window.location.href = '/consulta.html';
+            } else {
+                // Usuário não está logado
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <p>Carregando...</p>
+    </div>
+</body>
+</html>
