@@ -1,19 +1,279 @@
-.form-floating input {
-    width: 100%;
-    padding: 25px 20px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    background: white;
-    height: 70px;
+/* Container e Header */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.login-box {
-    background: rgb(17, 57, 189);
-    padding: 50px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 600px; /* Aumentei para caber melhor o email */
-    margin: 0 auto;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Botões */
+.logout-btn, .pdf-btn {
+    padding: 8px 16px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn {
+    background-color: #dc3545;
+}
+
+.pdf-btn {
+    background-color: #0066cc;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pdf-btn:hover {
+    background-color: #0052a3;
+}
+
+/* Área de Busca */
+.search-box {
+    margin-bottom: 20px;
+}
+
+.search-box form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+.search-box button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Resultado */
+.result-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-top: 30px;
+    display: none;
+}
+
+.result-section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0;
+}
+
+.header-text {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.header-text h2 {
+    font-size: 20px;
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.header-text h3 {
+    font-size: 18px;
+    margin: 8px 0 0;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Conteúdo do Resultado */
+.result-content {
+    padding: 20px;
+}
+
+.basic-info {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-row {
+    margin: 12px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-label {
+    color: #666;
+    font-weight: 500;
+    min-width: 200px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #333;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+/* Endereço */
+.address-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Seção QSA */
+.qsa-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.qsa-section h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+}
+
+.socio-item {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+/* Estados de Loading e Erro */
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 16px;
+}
+
+.error-message {
+    color: #dc3545;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ffebee;
+    margin: 20px 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .basic-info,
+    .address-info {
+        grid-template-columns: 1fr;
+    }
+
+    .info-label {
+        min-width: 150px;
+    }
+
+    .header-text h2 {
+        font-size: 18px;
+    }
+
+    .header-text h3 {
+        font-size: 16px;
+    }
+
+    .result-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .pdf-btn {
+        width: 100%;
+    }
+}
+
+.search-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.search-section h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+#consultaVeiculoForm {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#consultaVeiculoForm input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#consultaVeiculoForm input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.error-message {
+    color: #dc3545;
+    padding: 15px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-top: 10px;
 }
