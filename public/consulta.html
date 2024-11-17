@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta CNPJ</title>
+    <title>Sistema de Consultas</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -23,6 +23,7 @@
                 >
                 <button type="submit">Consultar</button>
             </form>
+            <button id="downloadPDF" style="display: none;">Baixar PDF</button>
         </div>
 
         <div id="resultado" class="result-box"></div>
@@ -32,6 +33,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { firebaseConfig } from './js/firebase-config.js';
+        import { jsPDF } from "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -51,7 +53,6 @@
             }
         };
 
-        // Função para consultar CNPJ usando BrasilAPI
         async function consultarCNPJ(cnpj) {
             try {
                 const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
@@ -68,67 +69,167 @@
             e.preventDefault();
             const cnpj = document.getElementById('cnpj').value.replace(/\D/g, '');
             const resultado = document.getElementById('resultado');
+            const downloadButton = document.getElementById('downloadPDF');
             
             try {
                 resultado.style.display = 'block';
+                downloadButton.style.display = 'none';
                 resultado.innerHTML = '<div class="loading">Consultando...</div>';
 
                 const data = await consultarCNPJ(cnpj);
-                console.log('Dados recebidos:', data);
-                console.log('Quadro societário:', data.qsa);
-                
-                // Log detalhado de cada sócio
-                data.qsa?.forEach((socio, index) => {
-                    console.log(`Sócio ${index + 1}:`, socio);
-                });
-
-                // Verifica se tem QSA (quadro de sócios)
                 const temSocios = data.qsa && Array.isArray(data.qsa) && data.qsa.length > 0;
 
                 resultado.innerHTML = `
                     <div class="result-section">
-                        <div class="result-header">Quadro de Sócios e Administradores - QSA</div>
-                        <div class="result-content">
-                            <div class="info-row">
-                                <span class="info-label">CNPJ:</span>
-                                <span class="info-value">${data.cnpj}</span>
+                        <!-- Cabeçalho do Documento -->
+                        <div class="document-header">
+                            <div class="republic-header">
+                                <h2>REPÚBLICA FEDERATIVA DO BRASIL</h2>
+                                <h3>CADASTRO NACIONAL DA PESSOA JURÍDICA</h3>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">NOME EMPRESARIAL:</span>
+                        </div>
+
+                        <!-- Comprovante -->
+                        <div class="document-title">
+                            <h4>COMPROVANTE DE INSCRIÇÃO E DE SITUAÇÃO CADASTRAL</h4>
+                        </div>
+
+                        <!-- Informações Principais -->
+                        <div class="main-info">
+                            <div class="info-numero-inscricao">
+                                <div class="col-2">
+                                    <span class="info-label">NÚMERO DE INSCRIÇÃO</span>
+                                    <span class="info-value">${data.cnpj}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="info-data">DATA DE ABERTURA</span>
+                                    <span class="info-value">${data.data_inicio_atividade || 'Não informado'}</span>
+                                </div>
+                            </div>
+
+                            <div class="info-nome-empresarial">
+                                <span class="info-l">NOME EMPRESARIAL</span>
                                 <span class="info-value">${data.razao_social}</span>
                             </div>
+
                             <div class="info-row">
-                                <span class="info-label">CAPITAL SOCIAL:</span>
-                                <span class="info-value">R$ ${data.capital_social ? data.capital_social.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'Não informado'}</span>
+                                <div class="col-2">
+                                    <span class="info-titulo-estabelecimento">TÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)</span>
+                                    <span class="info-value">${data.nome_fantasia || 'Não informado'}</span>
+                                </div>
+                                <div class="col-2">
+                                    <span class="info-label">PORTE</span>
+                                    <span class="info-value">${data.porte || 'Não informado'}</span>
+                                </div>
                             </div>
 
-                            ${temSocios ? `
-                                <div class="socios-header">
-                                    O Quadro de Sócios e Administradores(QSA) constante da base de dados do Cadastro Nacional da Pessoa Jurídica (CNPJ) é o seguinte:
+                            <div class="info-row">
+                                <span class="info-label">CÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL</span>
+                                <span class="info-value">${data.cnae_fiscal} - ${data.cnae_fiscal_descricao}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS</span>
+                                <div class="secondary-activities">
+                                    ${data.cnaes_secundarios ? data.cnaes_secundarios.map(cnae => 
+                                        `<div class="activity-item">${cnae.codigo} - ${cnae.descricao}</div>`
+                                    ).join('') : 'Não informado'}
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">CÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA</span>
+                                <span class="info-value">${data.natureza_juridica}</span>
+                            </div>
+
+                            <div class="info-row address-row">
+                                <div class="col-3">
+                                    <span class="info-label">LOGRADOURO</span>
+                                    <span class="info-value">${data.logradouro}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">NÚMERO</span>
+                                    <span class="info-value">${data.numero}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">COMPLEMENTO</span>
+                                    <span class="info-value">${data.complemento || 'Não informado'}</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row address-row">
+                                <div class="col-3">
+                                    <span class="info-label">CEP</span>
+                                    <span class="info-value">${data.cep}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">BAIRRO/DISTRITO</span>
+                                    <span class="info-value">${data.bairro}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">MUNICÍPIO</span>
+                                    <span class="info-value">${data.municipio}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">UF</span>
+                                    <span class="info-value">${data.uf}</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="col-3">
+                                    <span class="info-label">TELEFONE</span>
+                                    <span class="info-value">${data.ddd_telefone_1 || 'Não informado'}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">SITUAÇÃO CADASTRAL</span>
+                                    <span class="info-value">${data.descricao_situacao_cadastral || 'ATIVA'}</span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="info-label">DATA DA SITUAÇÃO CADASTRAL</span>
+                                    <span class="info-value">${data.data_situacao_cadastral || data.data_situacao || 'Não informado'}</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- QSA -->
+                        <div class="qsa-section">
+                            <div class="result-header">Quadro de Sócios e Administradores - QSA</div>
+                            <div class="result-content">
+                                <div class="info-row">
+                                    <span class="info-label">CAPITAL SOCIAL:</span>
+                                    <span class="info-value">R$ ${data.capital_social ? data.capital_social.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'Não informado'}</span>
                                 </div>
 
-                                ${data.qsa.map(socio => `
-                                    <div class="socio-item">
-                                        <div class="info-row">
-                                            <span class="info-label">Nome/Nome Empresarial:</span>
-                                            <span class="info-value">${socio.nome_socio || socio.nome || 'Não informado'}</span>
+                                ${temSocios ? `        
+
+                                    ${data.qsa.map(socio => `
+                                        <div class="socio-item">
+                                            <div class="info-row">
+                                                <span class="info-label">Nome/Nome Empresarial:</span>
+                                                <span class="info-value">${socio.nome_socio || socio.nome || 'Não informado'}</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span class="info-label">Qualificação:</span>
+                                                <span class="info-value">${socio.qualificacao_socio || socio.qualificacao || 'Não informado'}</span>
+                                            </div>
                                         </div>
-                                        <div class="info-row">
-                                            <span class="info-label">Qualificação:</span>
-                                            <span class="info-value">${socio.qualificacao_socio || socio.qualificacao || 'Não informado'}</span>
-                                        </div>
+                                    `).join('')}
+                                ` : `
+                                    <div class="socios-header">
+                                        Empresa não possui sócios cadastrados ou informação não disponível.
                                     </div>
-                                `).join('')}
-                            ` : `
-                                <div class="socios-header">
-                                    Empresa não possui sócios cadastrados ou informação não disponível.
-                                </div>
-                            `}
+                                `}
+                            </div>
                         </div>
                     </div>
                 `;
 
+                downloadButton.style.display = 'block';
+
             } catch (error) {
+                downloadButton.style.display = 'none';
                 resultado.innerHTML = `
                     <div class="error-message">
                         ${error.message || 'Erro ao consultar CNPJ. Verifique o número e tente novamente.'}
@@ -136,6 +237,21 @@
                 `;
                 resultado.className = 'result-box error';
             }
+        });
+
+        document.getElementById('downloadPDF').addEventListener('click', () => {
+            const resultado = document.getElementById('resultado');
+            const pdf = new jsPDF();
+            
+            pdf.html(resultado, {
+                callback: function(pdf) {
+                    pdf.save('consulta-cnpj.pdf');
+                },
+                x: 15,
+                y: 15,
+                width: 170,
+                windowWidth: 650
+            });
         });
     </script>
 </body>

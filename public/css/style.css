@@ -1,4 +1,4 @@
-/* Container e Header */
+/* Contêiner e Cabeçalho */
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -22,6 +22,8 @@
     transition: background-color 0.3s ease;
 }
 
+
+
 .logout-btn {
     background-color: #dc3545;
 }
@@ -39,6 +41,22 @@
 /* Área de Busca */
 .search-box {
     margin-bottom: 20px;
+    background: rgb(241, 239, 245);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(238, 230, 248, 0.718);
+    padding: 5px;
+    justify-content: space-between;
+}
+
+.login-box {
+   margin-bottom: 20px;
+   background: rgb(241, 239, 245);
+   border-radius: 8px;
+   box-shadow: 0 2px 4px rgba(238, 230, 248, 0.718);
+   padding: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 .search-box form {
@@ -72,9 +90,20 @@
 }
 
 .result-section {
-    background: #fff;
+    background: rgb(241, 239, 245);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(238, 230, 248, 0.718);
+    margin: 20px 10px;
+    padding: 5px;    
+}
+
+.republic-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: auto;
+    border-bottom: 1px solid #080808;
 }
 
 .result-header {
@@ -106,11 +135,53 @@
     font-weight: 500;
 }
 
+/* Informações Principais da Empresa */
+.company-main-info {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.main-info {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: hsl(210, 22%, 91%);
+    border-radius: 8px;
+}
+
+/* Seção de Atividades */
+.activities-section {
+    margin: 20px 0;
+}
+
+.activity-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-code {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.activity-description {
+    color: #333;
+    font-size: 14px;
+}
+
 /* Conteúdo do Resultado */
 .result-content {
     padding: 20px;
 }
 
+/* Informações Básicas */
 .basic-info {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -133,8 +204,30 @@
     border-bottom: 1px solid #eee;
 }
 
-.info-label {
+.info-numero-inscricao {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-nome-empresarial {
+    margin: 12px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    /* display: inline-block; */
+}
+
+
+.info-titulo-estabelecimento {
     color: #666;
+    font-weight: 500;
+    min-width: 200px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.info-porte {
     font-weight: 500;
     min-width: 200px;
     display: inline-block;
@@ -147,7 +240,7 @@
     font-size: 14px;
 }
 
-/* Endereço */
+/* Informações de Endereço */
 .address-info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -158,7 +251,7 @@
     border-radius: 8px;
 }
 
-/* Seção QSA */
+/* Seção QSA (Quadro de Sócios e Administradores) */
 .qsa-section {
     margin-top: 40px;
     padding-top: 30px;
@@ -181,7 +274,17 @@
     border: 1px solid #eee;
 }
 
-/* Estados de Loading e Erro */
+/* Data de Emissão */
+.emission-info {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Estados de Carregamento e Erro */
 .loading {
     text-align: center;
     padding: 30px;
@@ -199,35 +302,7 @@
     margin: 20px 0;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .basic-info,
-    .address-info {
-        grid-template-columns: 1fr;
-    }
-
-    .info-label {
-        min-width: 150px;
-    }
-
-    .header-text h2 {
-        font-size: 18px;
-    }
-
-    .header-text h3 {
-        font-size: 16px;
-    }
-
-    .result-header {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .pdf-btn {
-        width: 100%;
-    }
-}
-
+/* Seção de Busca */
 .search-section {
     background: #fff;
     padding: 20px;
@@ -263,17 +338,127 @@
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
-.loading {
-    text-align: center;
-    padding: 20px;
-    color: #666;
+#downloadPDF {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.error-message {
+#downloadPDF:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .basic-info,
+    .address-info {
+        grid-template-columns: 1fr;
+    }
+
+    .info-label {
+        min-width: 150px;
+    }
+
+    .header-text h2 {
+        font-size: 18px;
+    }
+
+    .header-text h3 {
+        font-size: 16px;
+    }
+
+    .result-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .pdf-btn {
+        width: 100%;
+    }
+}
+
+.document-title {
+    text-align: center;
+    margin: 20px 0;
+    border-bottom: 1px solid #080808;
+    padding: 5px;
+}
+
+.document-title h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.main-info {
+    margin: 20px 0;
+}
+
+.col-2 {
+    width: auto;
+    display: inline-block;
+    vertical-align: top;
+    padding: 5px;
+    
+}
+
+.col-3 {
+    width: 33.33%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.address-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-row {
+    margin: 10px 0;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.info-label {
+    display: block;
+    font-weight: bold;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    display: block;
+    font-size: 14px;
+    color: #333;
+}
+
+.secondary-activities {
+    margin-top: 5px;
+}
+
+.activity-item {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .col-2, .col-3 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+.status-ativa {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-inativa {
     color: #dc3545;
-    padding: 15px;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
-    margin-top: 10px;
+    font-weight: bold;
 }
